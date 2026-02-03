@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Photo Gallery Blog - 느린 버전</title>
+
+  <!-- 🔴
+       @see https://web.dev/articles/critical-rendering-path/render-blocking-css -->
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- 🔴
+       @see https://web.dev/articles/font-best-practices
+       @see https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=block">
+
+  <!-- 🔴
+       @see https://web.dev/articles/efficiently-load-third-party-javascript -->
+  <script src="assets/analytics.js"></script>
+  <script src="assets/comments.js"></script>
+</head>
+<body>
+  <!-- 🔴
+       @see https://web.dev/articles/optimize-cls -->
+  <header>
+    <h1>Photo Gallery Blog</h1>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#about">About</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 🔴
+         @see https://web.dev/articles/optimize-lcp
+         @see https://web.dev/articles/fetch-priority -->
+    <section class="hero">
+      <img src="https://picsum.photos/1920/1080"
+           alt="Hero Image">
+      <div class="hero-text">
+        <h2>Welcome to My Photo Gallery</h2>
+        <p>Discover amazing photos from around the world</p>
+      </div>
+    </section>
+
+    <section class="content">
+      <article>
+        <h2>About This Gallery</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      </article>
+
+      <!-- 🔴
+           @see https://web.dev/articles/optimize-inp -->
+      <div class="search-container">
+        <input type="text" id="search" placeholder="Search photos...">
+      </div>
+
+      <!-- 🔴
+           @see https://web.dev/articles/browser-level-image-lazy-loading
+           @see https://developer.mozilla.org/en-US/docs/Web/Performance/Lazy_loading -->
+      <section class="gallery" id="gallery">
+        <h2>Gallery</h2>
+        <div class="gallery-grid" id="gallery-grid">
+          <!-- JavaScript로 동적 생성 컨텐츠 -->
+        </div>
+      </section>
+    </section>
+
+    <!-- 댓글 섹션 -->
+    <section class="comments" id="comments">
+      <h2>Comments</h2>
+      <div id="comments-container">
+        <p>Loading comments...</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 Photo Gallery Blog. All rights reserved.</p>
+  </footer>
+
+  <!-- 🔴
+       @see https://web.dev/articles/reduce-javascript-payloads-with-code-splitting -->
+  <script src="script.js"></script>
+
+  <!-- 🔴
+       @see https://web.dev/articles/optimize-cls
+       @see https://web.dev/articles/cls -->
+  <script>
+    setTimeout(() => {
+      const banner = document.createElement('div');
+      banner.className = 'banner';
+      banner.innerHTML = '🎉 Special Offer: 50% off on premium membership!';
+      document.querySelector('header').insertAdjacentElement('afterbegin', banner);
+    }, 1000);
+  </script>
+</body>
+</html>
