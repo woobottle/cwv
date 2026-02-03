@@ -12,12 +12,13 @@
   <!-- 🔴
        @see https://web.dev/articles/font-best-practices
        @see https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=block">
+  <link rel="preconnect" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap">
+  <link rel="preload" href="https://media.woo-bottle.com/img/1920x1080.webp" as="image" type="image/webp">
 
   <!-- 🔴
        @see https://web.dev/articles/efficiently-load-third-party-javascript -->
-  <script src="assets/analytics.js"></script>
-  <script src="assets/comments.js"></script>
+  <script src="assets/analytics.js" defer></script>
+  <script src="assets/comments.js" defer></script>
 </head>
 <body>
   <!-- 🔴
@@ -40,15 +41,15 @@
         <source
           type="image/jpeg"
           srcset="
-            https://picsum.photos/600/338 600w,
-            https://picsum.photos/1024/576 1024w,
-            https://picsum.photos/1920/1080 1920w
+          https://media.woo-bottle.com/img/600x338.webp 600w,
+          https://media.woo-bottle.com/img/1024x576.webp 1024w,
+          https://media.woo-bottle.com/img/1920x1080.webp 1920w
           "
           sizes="100vw"
         />
         <!-- media: (min-width: 1080px)로도 가능-->
         <img
-          src="https://picsum.photos/1920/1080"
+          src="https://media.woo-bottle.com/img/1920x1080.webp"
           width="1920"
           height="1080"
           alt="Hero Image"

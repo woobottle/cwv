@@ -20,7 +20,7 @@ const __dirname = path.dirname(__filename);
 
 // 설정
 const CONFIG = {
-  url: 'http://localhost:56639',
+  url: 'http://localhost:3000',
   resultsDir: path.join(__dirname, 'lighthouse-results'),
   runs: 3, // 3회 측정 후 중간값 사용
   thresholds: {
