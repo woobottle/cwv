@@ -36,8 +36,26 @@
          @see https://web.dev/articles/optimize-lcp
          @see https://web.dev/articles/fetch-priority -->
     <section class="hero">
-      <img src="https://picsum.photos/1920/1080"
-           alt="Hero Image">
+      <picture>
+        <source
+          type="image/jpeg"
+          srcset="
+            https://picsum.photos/600/338 600w,
+            https://picsum.photos/1024/576 1024w,
+            https://picsum.photos/1920/1080 1920w
+          "
+          sizes="100vw"
+        />
+        <!-- media: (min-width: 1080px)로도 가능-->
+        <img
+          src="https://picsum.photos/1920/1080"
+          width="1920"
+          height="1080"
+          alt="Hero Image"
+          fetchpriority="high"
+        />
+        <!-- width/height은 비율을 먼저 알려줘서 레이아웃 당시 영역을 확보하기 위함 -->
+      </picture>
       <div class="hero-text">
         <h2>Welcome to My Photo Gallery</h2>
         <p>Discover amazing photos from around the world</p>
