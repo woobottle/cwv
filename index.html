@@ -4,7 +4,74 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Photo Gallery Blog - 느린 버전</title>
+  <style>
+    /* Header */
+header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 2rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
 
+header h1 {
+  margin-bottom: 1rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+nav {
+  display: flex;
+  gap: 2rem;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.3s;
+}
+
+nav a:hover {
+  opacity: 0.8;
+}
+
+/* Hero Section */
+.hero {
+  position: relative;
+  width: 100%;
+  /* 🔴 문제: aspect-ratio나 min-height 없음 */
+  aspect-ratio: 1920 / 1080;
+  overflow: hidden;
+}
+
+.hero img {
+  width: 100%;
+  /* 🔴 문제: height: auto만 있고 width/height 속성 없음 (CLS 발생) */
+  height: auto;
+  display: block;
+}
+
+.hero-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.hero-text h2 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.hero-text p {
+  font-size: 1.5rem;
+  font-weight: 300;
+}
+  </style>
   <!-- 🔴
        @see https://web.dev/articles/critical-rendering-path/render-blocking-css -->
   <link rel="stylesheet" href="styles.css">
