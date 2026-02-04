@@ -37,14 +37,13 @@ function renderGallery(images) {
   images.forEach(img => {
     const item = document.createElement('div');
     item.className = 'gallery-item';
+    item.dataset.title = img.title
 
     item.innerHTML = `
-      <div data-title="${img.title}">
-        <img src="${img.url}" alt="${img.title}" loading="lazy">
-        <div class="gallery-item-overlay">
-          <h3>${img.title}</h3>
-          <p>${img.description}</p>
-        </div>
+      <img src="${img.url}" alt="${img.title}" loading="lazy">
+      <div class="gallery-item-overlay">
+        <h3>${img.title}</h3>
+        <p>${img.description}</p>
       </div>
     `;
 
@@ -87,17 +86,14 @@ function addEventListenerToGalleryGrid() {
 window.addEventListener('load', () => {
   console.log('Page loaded');
 
-  // 🔴
-  processComplexData();
-
+  requestIdleCallback(processComplexData)
+  
   // 🔴
   const images = generateImageData(50);
   renderGallery(images);
 
   addEventListenerToGalleryGrid();
-  // 🔴
-  // @see https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events#event_delegation
-
+  
   // 🔴
   // @see https://web.dev/articles/optimize-inp
   // @see https://css-tricks.com/debouncing-throttling-explained-examples/
@@ -122,19 +118,17 @@ window.addEventListener('load', () => {
   });
 });
 
-// 🔴
-// @see https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API
 function checkVisibleImages() {
   const images = document.querySelectorAll('.gallery-item img');
 
-  images.forEach(img => {
-    // 🔴 문제: 강제 reflow 발생 (getBoundingClientRect 반복 호출) 이건 어떻게 개선 가능하지?
-    const rect = img.getBoundingClientRect();
-    const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+  const intersectionObserver = new IntersectionObserver((entries, observer) => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1'
 
-    if (isVisible) {
-      img.style.opacity = '1';
+        observer.unobserve(entry.target)
+      }
     }
-  });
+  })
+  images.forEach(el => intersectionObserver.observe(el))
 }
-
