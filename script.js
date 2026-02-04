@@ -39,10 +39,12 @@ function renderGallery(images) {
     item.className = 'gallery-item';
 
     item.innerHTML = `
-      <img src="${img.url}" alt="${img.title}">
-      <div class="gallery-item-overlay">
-        <h3>${img.title}</h3>
-        <p>${img.description}</p>
+      <div data-title="${img.title}">
+        <img src="${img.url}" alt="${img.title}" loading="lazy">
+        <div class="gallery-item-overlay">
+          <h3>${img.title}</h3>
+          <p>${img.description}</p>
+        </div>
       </div>
     `;
 
@@ -61,11 +63,6 @@ function filterImages(query) {
   );
 }
 
-// 이미지 클릭 핸들러
-function handleImageClick(event) {
-  const title = event.currentTarget.querySelector('h3').textContent;
-  alert(`Clicked: ${title}`);
-}
 
 // 스크롤 진행률 업데이트
 function updateScrollProgress() {
@@ -75,6 +72,15 @@ function updateScrollProgress() {
 
   const progress = (scrollTop / (documentHeight - windowHeight)) * 100;
   console.log('Scroll progress:', progress.toFixed(2) + '%');
+}
+
+// 이미지 클릭 공통 핸들러
+function addEventListenerToGalleryGrid() {
+  const galleryGrid = document.getElementById('gallery-grid');
+  galleryGrid.addEventListener('click', (event) => {
+    const imgTitle = event.target.closest("[data-title]").dataset.title
+    alert(`Clicked: ${imgTitle}`)
+  })
 }
 
 // 🔴
@@ -88,12 +94,9 @@ window.addEventListener('load', () => {
   const images = generateImageData(50);
   renderGallery(images);
 
+  addEventListenerToGalleryGrid();
   // 🔴
   // @see https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events#event_delegation
-  const galleryItems = document.querySelectorAll('.gallery-item');
-  galleryItems.forEach(item => {
-    item.addEventListener('click', handleImageClick);
-  });
 
   // 🔴
   // @see https://web.dev/articles/optimize-inp
