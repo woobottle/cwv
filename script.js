@@ -82,41 +82,20 @@ function addEventListenerToGalleryGrid() {
   })
 }
 
-// 🔴
-window.addEventListener('load', () => {
-  console.log('Page loaded');
-
-  requestIdleCallback(processComplexData)
-  
-  // 🔴
-  const images = generateImageData(50);
-  renderGallery(images);
-
-  addEventListenerToGalleryGrid();
-  
-  // 🔴
-  // @see https://web.dev/articles/optimize-inp
-  // @see https://css-tricks.com/debouncing-throttling-explained-examples/
-  const searchInput = document.getElementById('search');
-  searchInput.addEventListener('input', (e) => {
+function handleSearchInput() {
+  return debounce((e) => {
     const filtered = filterImages(e.target.value);
     renderGallery(filtered);
+  }, 1000)
+}
 
-    // 검색 후 다시 이벤트 리스너 등록해야 함
-    const newItems = document.querySelectorAll('.gallery-item');
-    newItems.forEach(item => {
-      item.addEventListener('click', handleImageClick);
-    });
-  });
-
-  // 🔴
-  // @see https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#using_passive_listeners
-  window.addEventListener('scroll', () => {
+function handleScrollEvent() {
+  return throttle(() => {
     updateScrollProgress();
     // 추가 작업들...
     checkVisibleImages();
-  });
-});
+  }, 100)
+}
 
 function checkVisibleImages() {
   const images = document.querySelectorAll('.gallery-item img');
@@ -132,3 +111,51 @@ function checkVisibleImages() {
   })
   images.forEach(el => intersectionObserver.observe(el))
 }
+
+function debounce(callback, delay) {
+  let timeoutId;
+
+  return (args) => {
+    clearTimeout(timeoutId);
+    
+    timeoutId = setTimeout(() => callback(args), delay)
+  }
+}
+
+function throttle(callback, delay) {
+  let timeoutId;
+
+  return () => {
+    if (timeoutId) {
+      return;
+    }
+
+    timeoutId = setTimeout(() => {
+      callback()
+      timeoutId = null;
+    }, delay)
+  }
+}
+
+
+// 🔴
+window.addEventListener('load', () => {
+  console.log('Page loaded');
+
+  requestIdleCallback(processComplexData)
+  
+  // 🔴
+  const images = generateImageData(50);
+  renderGallery(images);
+
+  addEventListenerToGalleryGrid();
+  
+  // 🔴
+  const searchInput = document.getElementById('search');
+  searchInput.addEventListener('input', handleSearchInput());
+
+
+  // 🔴
+  // @see https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#using_passive_listeners
+  window.addEventListener('scroll', handleScrollEvent());
+});
