@@ -9,7 +9,7 @@ function generateImageData(count) {
       id: i,
       url: `https://picsum.photos/400/300?random=${i}`,
       title: `Photo ${i}`,
-      description: `Beautiful photo number ${i}`
+      description: `Beautiful photo number ${i}`,
     });
   }
   return images;
@@ -40,7 +40,7 @@ function renderGallery(images) {
     item.dataset.title = img.title
 
     item.innerHTML = `
-      <img src="${img.url}" alt="${img.title}" loading="lazy">
+      <img src="${img.url}" alt="${img.title}" loading="lazy" width="400" height="300" aspect-ratio=4/3>
       <div class="gallery-item-overlay">
         <h3>${img.title}</h3>
         <p>${img.description}</p>
