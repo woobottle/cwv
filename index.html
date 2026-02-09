@@ -74,11 +74,17 @@ nav a:hover {
   </style>
   <link rel="stylesheet" href="styles.css">
 
-  <!-- 폰트 최적화 방식 변경  https://web.dev/articles/font-best-practices?hl=ko#preconnect_to_critical_third-party_origins -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap">
-  <link rel="preload" href="https://media.woo-bottle.com/img/1920x1080.webp" as="image" type="image/webp">
+  
+  <link rel="preconnect" href="https://media.woo-bottle.com" crossorigin>
+  <link rel="preload" as="image" type="image/webp"
+    imagesrcset="
+      https://media.woo-bottle.com/img/600x338.webp 600w,
+      https://media.woo-bottle.com/img/1024x576.webp 1024w,
+      https://media.woo-bottle.com/img/1920x1080.webp 1920w"
+    imagesizes="100vw">
 
   <!-- 🔴
        @see https://web.dev/articles/efficiently-load-third-party-javascript -->
@@ -104,7 +110,7 @@ nav a:hover {
     <section class="hero">
       <picture>
         <source
-          type="image/jpeg"
+          type="image/webp"
           srcset="
           https://media.woo-bottle.com/img/600x338.webp 600w,
           https://media.woo-bottle.com/img/1024x576.webp 1024w,
