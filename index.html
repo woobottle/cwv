@@ -4,20 +4,92 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Photo Gallery Blog - 느린 버전</title>
+  <style>
+    /* Header */
+header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 2rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
 
-  <!-- 🔴
-       @see https://web.dev/articles/critical-rendering-path/render-blocking-css -->
+header h1 {
+  margin-bottom: 1rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+nav {
+  display: flex;
+  gap: 2rem;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.3s;
+}
+
+nav a:hover {
+  opacity: 0.8;
+}
+
+/* Hero Section */
+.hero {
+  position: relative;
+  width: 100%;
+  /* 🔴 문제: aspect-ratio나 min-height 없음 */
+  aspect-ratio: 1920 / 1080;
+  overflow: hidden;
+}
+
+.hero img {
+  width: 100%;
+  /* 🔴 문제: height: auto만 있고 width/height 속성 없음 (CLS 발생) */
+  height: auto;
+  display: block;
+}
+
+.hero-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.hero-text h2 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.hero-text p {
+  font-size: 1.5rem;
+  font-weight: 300;
+}
+  </style>
   <link rel="stylesheet" href="styles.css">
 
-  <!-- 🔴
-       @see https://web.dev/articles/font-best-practices
-       @see https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=block">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" media="print" onload="this.media='all'">
+  
+  <link rel="preconnect" href="https://media.woo-bottle.com" crossorigin>
+  <link rel="preload" as="image" type="image/webp"
+    imagesrcset="
+      https://media.woo-bottle.com/img/600x338.webp 600w,
+      https://media.woo-bottle.com/img/1024x576.webp 1024w,
+      https://media.woo-bottle.com/img/1920x1080.webp 1920w"
+    imagesizes="100vw">
 
   <!-- 🔴
        @see https://web.dev/articles/efficiently-load-third-party-javascript -->
-  <script src="assets/analytics.js"></script>
-  <script src="assets/comments.js"></script>
+  <script src="assets/analytics.js" defer></script>
+  <script src="assets/comments.js" defer></script>
 </head>
 <body>
   <!-- 🔴
@@ -36,8 +108,26 @@
          @see https://web.dev/articles/optimize-lcp
          @see https://web.dev/articles/fetch-priority -->
     <section class="hero">
-      <img src="https://picsum.photos/1920/1080"
-           alt="Hero Image">
+      <picture>
+        <source
+          type="image/webp"
+          srcset="
+          https://media.woo-bottle.com/img/600x338.webp 600w,
+          https://media.woo-bottle.com/img/1024x576.webp 1024w,
+          https://media.woo-bottle.com/img/1920x1080.webp 1920w
+          "
+          sizes="100vw"
+        />
+        <!-- media: (min-width: 1080px)로도 가능-->
+        <img
+          src="https://media.woo-bottle.com/img/1920x1080.webp"
+          width="1920"
+          height="1080"
+          alt="Hero Image"
+          fetchpriority="high"
+        />
+        <!-- width/height은 비율을 먼저 알려줘서 레이아웃 당시 영역을 확보하기 위함 -->
+      </picture>
       <div class="hero-text">
         <h2>Welcome to My Photo Gallery</h2>
         <p>Discover amazing photos from around the world</p>

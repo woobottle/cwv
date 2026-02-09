@@ -9,7 +9,7 @@ function generateImageData(count) {
       id: i,
       url: `https://picsum.photos/400/300?random=${i}`,
       title: `Photo ${i}`,
-      description: `Beautiful photo number ${i}`
+      description: `Beautiful photo number ${i}`,
     });
   }
   return images;
@@ -37,9 +37,10 @@ function renderGallery(images) {
   images.forEach(img => {
     const item = document.createElement('div');
     item.className = 'gallery-item';
+    item.dataset.title = img.title
 
     item.innerHTML = `
-      <img src="${img.url}" alt="${img.title}">
+      <img src="${img.url}" alt="${img.title}" loading="lazy" width="400" height="300" aspect-ratio=4/3>
       <div class="gallery-item-overlay">
         <h3>${img.title}</h3>
         <p>${img.description}</p>
@@ -61,11 +62,6 @@ function filterImages(query) {
   );
 }
 
-// 이미지 클릭 핸들러
-function handleImageClick(event) {
-  const title = event.currentTarget.querySelector('h3').textContent;
-  alert(`Clicked: ${title}`);
-}
 
 // 스크롤 진행률 업데이트
 function updateScrollProgress() {
@@ -77,61 +73,89 @@ function updateScrollProgress() {
   console.log('Scroll progress:', progress.toFixed(2) + '%');
 }
 
+// 이미지 클릭 공통 핸들러
+function addEventListenerToGalleryGrid() {
+  const galleryGrid = document.getElementById('gallery-grid');
+  galleryGrid.addEventListener('click', (event) => {
+    const imgTitle = event.target.closest("[data-title]").dataset.title
+    alert(`Clicked: ${imgTitle}`)
+  })
+}
+
+function handleSearchInput() {
+  return debounce((e) => {
+    const filtered = filterImages(e.target.value);
+    renderGallery(filtered);
+  }, 1000)
+}
+
+function handleScrollEvent() {
+  return throttle(() => {
+    updateScrollProgress();
+    // 추가 작업들...
+    checkVisibleImages();
+  }, 100)
+}
+
+function checkVisibleImages() {
+  const images = document.querySelectorAll('.gallery-item img');
+
+  const intersectionObserver = new IntersectionObserver((entries, observer) => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1'
+
+        observer.unobserve(entry.target)
+      }
+    }
+  })
+  images.forEach(el => intersectionObserver.observe(el))
+}
+
+function debounce(callback, delay) {
+  let timeoutId;
+
+  return (args) => {
+    clearTimeout(timeoutId);
+    
+    timeoutId = setTimeout(() => callback(args), delay)
+  }
+}
+
+function throttle(callback, delay) {
+  let timeoutId;
+
+  return () => {
+    if (timeoutId) {
+      return;
+    }
+
+    timeoutId = setTimeout(() => {
+      callback()
+      timeoutId = null;
+    }, delay)
+  }
+}
+
+
 // 🔴
 window.addEventListener('load', () => {
   console.log('Page loaded');
 
-  // 🔴
-  processComplexData();
-
+  requestIdleCallback(processComplexData)
+  
   // 🔴
   const images = generateImageData(50);
   renderGallery(images);
 
+  addEventListenerToGalleryGrid();
+  
   // 🔴
-  // @see https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events#event_delegation
-  const galleryItems = document.querySelectorAll('.gallery-item');
-  galleryItems.forEach(item => {
-    item.addEventListener('click', handleImageClick);
-  });
-
-  // 🔴
-  // @see https://web.dev/articles/optimize-inp
-  // @see https://css-tricks.com/debouncing-throttling-explained-examples/
   const searchInput = document.getElementById('search');
-  searchInput.addEventListener('input', (e) => {
-    const filtered = filterImages(e.target.value);
-    renderGallery(filtered);
+  searchInput.addEventListener('input', handleSearchInput());
 
-    // 검색 후 다시 이벤트 리스너 등록해야 함
-    const newItems = document.querySelectorAll('.gallery-item');
-    newItems.forEach(item => {
-      item.addEventListener('click', handleImageClick);
-    });
-  });
 
   // 🔴
   // @see https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#using_passive_listeners
-  window.addEventListener('scroll', () => {
-    updateScrollProgress();
-    // 추가 작업들...
-    checkVisibleImages();
-  });
+  window.addEventListener('scroll', handleScrollEvent());
 });
-
-// 🔴
-// @see https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API
-function checkVisibleImages() {
-  const images = document.querySelectorAll('.gallery-item img');
-
-  images.forEach(img => {
-    // 🔴 문제: 강제 reflow 발생 (getBoundingClientRect 반복 호출) 이건 어떻게 개선 가능하지?
-    const rect = img.getBoundingClientRect();
-    const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
-
-    if (isVisible) {
-      img.style.opacity = '1';
-    }
-  });
-}
-
